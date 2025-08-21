@@ -178,7 +178,30 @@ class _CarWashAppState extends State<CarWashApp> {
      length: 4,
      child: Scaffold(
        appBar: AppBar(
-         title: Text('🏢 Auto Club Erenköy'),
+         title: Row(
+           children: [
+             Container(
+               width: 32,
+               height: 32,
+               decoration: BoxDecoration(
+                 color: Colors.orange[400],
+                 shape: BoxShape.circle,
+               ),
+               child: Center(
+                 child: Text(
+                   'AC',
+                   style: TextStyle(
+                     color: Colors.black87,
+                     fontWeight: FontWeight.bold,
+                     fontSize: 14,
+                   ),
+                 ),
+               ),
+             ),
+             SizedBox(width: 8),
+             Text('Auto Club Erenköy'),
+           ],
+         ),
          backgroundColor: Colors.black87,
          foregroundColor: Colors.orange[400],
          elevation: 6,
@@ -241,7 +264,25 @@ class _CarWashAppState extends State<CarWashApp> {
                    padding: EdgeInsets.all(16),
                    child: Row(
                      children: [
-                       Icon(Icons.campaign, color: Colors.deepOrange[600], size: 32),
+                       Container(
+                         width: 40,
+                         height: 40,
+                         decoration: BoxDecoration(
+                           color: Colors.white,
+                           shape: BoxShape.circle,
+                           border: Border.all(color: Colors.deepOrange[600]!, width: 2),
+                         ),
+                         child: Center(
+                           child: Text(
+                             'AC',
+                             style: TextStyle(
+                               color: Colors.deepOrange[600],
+                               fontWeight: FontWeight.bold,
+                               fontSize: 16,
+                             ),
+                           ),
+                         ),
+                       ),
                        SizedBox(width: 12),
                        Expanded(
                          child: Column(

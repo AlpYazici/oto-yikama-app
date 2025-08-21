@@ -81,7 +81,30 @@ class _CampaignManagementScreenState extends State<CampaignManagementScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('🎯 Kampanya Yönetimi'),
+        title: Row(
+          children: [
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: Colors.orange[400],
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  'AC',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 8),
+            Text('Kampanya Yönetimi'),
+          ],
+        ),
         backgroundColor: Colors.black87,
         foregroundColor: Colors.orange[400],
         elevation: 4,

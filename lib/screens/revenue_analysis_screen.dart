@@ -173,7 +173,30 @@ class _RevenueAnalysisScreenState extends State<RevenueAnalysisScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('📊 Gelir Analizi'),
+        title: Row(
+          children: [
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: Colors.orange[400],
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  'AC',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 8),
+            Text('Gelir Analizi'),
+          ],
+        ),
         backgroundColor: Colors.black87,
         foregroundColor: Colors.orange[400],
         elevation: 4,
