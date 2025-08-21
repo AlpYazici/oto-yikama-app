@@ -372,6 +372,7 @@ class _CampaignManagementScreenState extends State<CampaignManagementScreen> {
               if (value) {
                 _activateCampaign(template);
               } else {
+                // Aynı isimli kampanyayı sil
                 _deactivateCampaign(template['name']);
               }
             },
@@ -612,6 +613,8 @@ class _CampaignManagementScreenState extends State<CampaignManagementScreen> {
       print('SMS hatası: $e');
     }
   }
+
+
   
   void _createCustomCampaign() {
     final nameController = TextEditingController();
