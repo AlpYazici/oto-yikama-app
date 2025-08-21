@@ -486,79 +486,44 @@ class _CampaignManagementScreenState extends State<CampaignManagementScreen> {
     );
   }
   
-    void _sendCampaignSMS() async {
+  void _sendCampaignSMS() async {
+    // Aktif kampanyalar
     final activeCampaigns = _campaigns.where((c) => c.isValid()).toList();
-    
     if (activeCampaigns.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Aktif kampanya yok! Önce bir kampanya açın.'),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Önce kampanya açın!'), backgroundColor: Colors.orange));
       return;
     }
     
-    // Tüm müşterilere SMS gönder
+    // Müşteri telefonları
     final prefs = await SharedPreferences.getInstance();
     final customers = prefs.getStringList('customers') ?? [];
-    Set<String> phoneNumbers = {};
-    
-    for (String customerStr in customers) {
-      final customer = Map<String, String>.from(json.decode(customerStr));
-      final phone = customer['phone'] ?? '';
-      if (phone.isNotEmpty) {
-        phoneNumbers.add(phone);
-      }
+    Set<String> phones = {};
+    for (String c in customers) {
+      final phone = json.decode(c)['phone'] ?? '';
+      if (phone.isNotEmpty) phones.add(phone);
     }
     
-    if (phoneNumbers.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Müşteri listesi boş!'),
-          backgroundColor: Colors.red,
-        ),
-      );
+    if (phones.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Müşteri yok!'), backgroundColor: Colors.red));
       return;
     }
     
-    String campaignMessage = '🎉 AUTO CLUB ERENKÖY KAMPANYA!\n\n';
-    for (var campaign in activeCampaigns) {
-      campaignMessage += '✅ ${campaign.name}\n';
-      campaignMessage += '💰 %${campaign.discountPercentage.toInt()} İNDİRİM\n\n';
-    }
-    campaignMessage += '🏢 Auto Club Erenköy - Profesyonel araç bakımı!';
+    // SMS mesajı
+    String msg = '🎉 AUTO CLUB ERENKÖY KAMPANYA!\n\n';
+    for (var c in activeCampaigns) msg += '✅ ${c.name}\n💰 %${c.discountPercentage.toInt()} İNDİRİM\n\n';
+    msg += '🏢 Auto Club Erenköy';
     
-    // DIREKT SMS GÖNDER - TIpkı main.dart'taki gibi
-    for (String phone in phoneNumbers) {
-      if (phone.isNotEmpty) {
-        _sendSMS(phone, campaignMessage);
-      }
-    }
+    // SMS gönder
+    for (String phone in phones) _sendSMS(phone, msg);
     
-    // Başarı mesajı
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${phoneNumbers.length} müşteriye SMS gönderildi!'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${phones.length} kişiye SMS gönderildi!'), backgroundColor: Colors.green));
   }
   
   _sendSMS(String phone, String message) async {
     try {
-      // SMS permission kontrolü
       var status = await Permission.sms.status;
-      if (status.isDenied) {
-        status = await Permission.sms.request();
-      }
-      
-      if (status.isGranted) {
-        await platform.invokeMethod('sendSMS', {'phoneNumber': phone, 'message': message});
-        print('SMS gönderildi: $phone');
-      } else {
-        print('SMS permission reddedildi');
-      }
+      if (status.isDenied) status = await Permission.sms.request();
+      if (status.isGranted) await platform.invokeMethod('sendSMS', {'phoneNumber': phone, 'message': message});
     } catch (e) {
       print('SMS hatası: $e');
     }
