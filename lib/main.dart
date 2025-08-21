@@ -127,7 +127,7 @@ class _CarWashAppState extends State<CarWashApp> {
        // Display mesajı (emoji'li)
        campaignMessage = '\n🎉 ${campaign.name}\n💰 ${finalPrice.toInt()}₺ (${originalPrice.toInt()}₺)';
        // SMS mesajı (emoji'siz)
-       smsMessage = '\nKAMPANYA: ${campaign.name}\nIndirimli Fiyat: ${finalPrice.toInt()} TL (Normal: ${originalPrice.toInt()} TL)';
+       smsMessage = ' KAMPANYA: ${campaign.name}. Indirimli Fiyat: ${finalPrice.toInt()} TL (Normal: ${originalPrice.toInt()} TL)';
      }
    }
 
@@ -151,7 +151,7 @@ class _CarWashAppState extends State<CarWashApp> {
    if (smsMessage.isNotEmpty) {
      smsText += smsMessage;
    }
-   smsText += '\nAuto Club Erenkoy';
+   smsText += ' Auto Club Erenkoy';
    
    _sendSMS(customer['phone']!, smsText);
    
@@ -517,7 +517,7 @@ class _CarWashAppState extends State<CarWashApp> {
    child: Row(children: [Icon(icon, size: 16, color: Colors.grey[600]), SizedBox(width: 4), Expanded(child: Text(text, style: TextStyle(fontSize: 14)))]));
 
  void _completeCustomer(Map<String, String> customer) {
-  _sendSMS(customer['phone']!, 'Merhaba! ${customer['plate']} hazır. Teşekkürler!\nAuto Club Erenkoy');
+  _sendSMS(customer['phone']!, 'Merhaba! ${customer['plate']} hazır. Teşekkürler! Auto Club Erenkoy');
   _customers.remove(customer);
   _saveCustomersToStorage();
   _showSnackBar('${customer['plate']} teslim edildi!', Colors.deepOrange[600]);

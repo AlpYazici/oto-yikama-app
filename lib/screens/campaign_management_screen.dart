@@ -508,9 +508,9 @@ class _CampaignManagementScreenState extends State<CampaignManagementScreen> {
       return;
     }
     
-    // SMS mesajı (emoji'siz)
-    String msg = 'AUTO CLUB ERENKOY KAMPANYA!\n\n';
-    for (var c in activeCampaigns) msg += '${c.name}\n%${c.discountPercentage.toInt()} INDIRIM\n\n';
+    // SMS mesajı (emoji'siz, tek satır)
+    String msg = 'AUTO CLUB ERENKOY KAMPANYA! ';
+    for (var c in activeCampaigns) msg += '${c.name} %${c.discountPercentage.toInt()} INDIRIM. ';
     msg += 'Auto Club Erenkoy';
     
     // SMS gönder
