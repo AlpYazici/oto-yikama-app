@@ -90,12 +90,23 @@ class _CarWashAppState extends State<CarWashApp> {
  }
 
  _sendSMS(String phone, String message) async {
-   try {
-     await platform.invokeMethod('sendSMS', {'phoneNumber': phone, 'message': message});
-   } catch (e) {
-     // SMS hatası sessizce geçilir
-   }
- }
+  try {
+    // SMS permission kontrolü
+    var status = await Permission.sms.status;
+    if (status.isDenied) {
+      status = await Permission.sms.request();
+    }
+    
+    if (status.isGranted) {
+      await platform.invokeMethod('sendSMS', {'phoneNumber': phone, 'message': message});
+      print('SMS gönderildi: $phone');
+    } else {
+      print('SMS permission reddedildi');
+    }
+  } catch (e) {
+    print('SMS hatası: $e');
+  }
+}
 
  _saveCustomer() async {
    if (_phoneController.text.isEmpty || _plateController.text.isEmpty || _selectedService.isEmpty) {

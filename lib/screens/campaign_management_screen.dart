@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:convert';
 import '../models/campaign_model.dart';
 
@@ -595,8 +596,21 @@ class _CampaignManagementScreenState extends State<CampaignManagementScreen> {
   
   Future<void> _sendSMS(String phone, String message) async {
     try {
-      await platform.invokeMethod('sendSMS', {'phoneNumber': phone, 'message': message});
-    } catch (e) {}
+      // SMS permission kontrolü
+      var status = await Permission.sms.status;
+      if (status.isDenied) {
+        status = await Permission.sms.request();
+      }
+      
+      if (status.isGranted) {
+        await platform.invokeMethod('sendSMS', {'phoneNumber': phone, 'message': message});
+        print('SMS gönderildi: $phone');
+      } else {
+        print('SMS permission reddedildi');
+      }
+    } catch (e) {
+      print('SMS hatası: $e');
+    }
   }
   
   void _createCustomCampaign() {
