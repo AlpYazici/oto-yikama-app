@@ -508,10 +508,10 @@ class _CampaignManagementScreenState extends State<CampaignManagementScreen> {
       return;
     }
     
-    // SMS mesajı
-    String msg = '🎉 AUTO CLUB ERENKÖY KAMPANYA!\n\n';
-    for (var c in activeCampaigns) msg += '✅ ${c.name}\n💰 %${c.discountPercentage.toInt()} İNDİRİM\n\n';
-    msg += '🏢 Auto Club Erenköy';
+    // SMS mesajı (emoji'siz)
+    String msg = 'AUTO CLUB ERENKOY KAMPANYA!\n\n';
+    for (var c in activeCampaigns) msg += '${c.name}\n%${c.discountPercentage.toInt()} INDIRIM\n\n';
+    msg += 'Auto Club Erenkoy';
     
     // SMS gönder
     for (String phone in phones) _sendSMS(phone, msg);

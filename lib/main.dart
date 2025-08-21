@@ -117,13 +117,17 @@ class _CarWashAppState extends State<CarWashApp> {
    await _loadActiveCampaigns();
    final originalPrice = _getServicePrice(_selectedService);
    var finalPrice = originalPrice;
-   var campaignMessage = '';
+   var campaignMessage = '';  // Display için emoji'li
+   var smsMessage = '';       // SMS için temiz
    
    if (_activeCampaigns.isNotEmpty) {
      final campaign = _activeCampaigns.first;
      if (_canApplyCampaign(campaign, _selectedService)) {
        finalPrice = campaign.calculateDiscountedPrice(originalPrice);
+       // Display mesajı (emoji'li)
        campaignMessage = '\n🎉 ${campaign.name}\n💰 ${finalPrice.toInt()}₺ (${originalPrice.toInt()}₺)';
+       // SMS mesajı (emoji'siz)
+       smsMessage = '\nKAMPANYA: ${campaign.name}\nIndirimli Fiyat: ${finalPrice.toInt()} TL (Normal: ${originalPrice.toInt()} TL)';
      }
    }
 
@@ -136,12 +140,20 @@ class _CarWashAppState extends State<CarWashApp> {
      'time': DateTime.now().toString().substring(11, 16),
      'date': DateTime.now().toString().substring(0, 10),
      'status': 'waiting',
-     'campaign': campaignMessage,
+     'campaign': campaignMessage,  // Display için emoji'li versiyon
    };
 
    _customers.add(customer);
    _saveCustomersToStorage();
-   _sendSMS(customer['phone']!, 'Merhaba! ${customer['plate']} sıraya alındı.$campaignMessage\n🏢 Auto Club Erenköy');
+   
+   // SMS için temiz mesaj
+   String smsText = 'Merhaba! ${customer['plate']} sıraya alındı.';
+   if (smsMessage.isNotEmpty) {
+     smsText += smsMessage;
+   }
+   smsText += '\nAuto Club Erenkoy';
+   
+   _sendSMS(customer['phone']!, smsText);
    
    _phoneController.clear();
    _plateController.clear();
@@ -505,10 +517,10 @@ class _CarWashAppState extends State<CarWashApp> {
    child: Row(children: [Icon(icon, size: 16, color: Colors.grey[600]), SizedBox(width: 4), Expanded(child: Text(text, style: TextStyle(fontSize: 14)))]));
 
  void _completeCustomer(Map<String, String> customer) {
-   _sendSMS(customer['phone']!, 'Merhaba! ${customer['plate']} hazır. Teşekkürler!\\n🏢 Auto Club Erenköy');
-   _customers.remove(customer);
-   _saveCustomersToStorage();
-   _showSnackBar('${customer['plate']} teslim edildi!', Colors.deepOrange[600]);
-   setState(() {});
- }
+  _sendSMS(customer['phone']!, 'Merhaba! ${customer['plate']} hazır. Teşekkürler!\nAuto Club Erenkoy');
+  _customers.remove(customer);
+  _saveCustomersToStorage();
+  _showSnackBar('${customer['plate']} teslim edildi!', Colors.deepOrange[600]);
+  setState(() {});
+}
 }
