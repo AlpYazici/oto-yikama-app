@@ -3,7 +3,7 @@
    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
    
    <application
-       android:label="car_wash_app"
+       android:label="Auto Club Erenköy"
        android:name="${applicationName}"
        android:icon="@mipmap/ic_launcher">
        <activity

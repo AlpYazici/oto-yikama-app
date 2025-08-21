@@ -1,4 +1,4 @@
-package com.example.car_wash_app
+package com.example.autoclub_erenkoy
 
 import android.telephony.SmsManager
 import io.flutter.embedding.android.FlutterActivity
