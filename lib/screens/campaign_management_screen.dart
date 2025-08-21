@@ -486,22 +486,14 @@ class _CampaignManagementScreenState extends State<CampaignManagementScreen> {
     );
   }
   
-  void _sendCampaignSMS() async {
+    void _sendCampaignSMS() async {
     final activeCampaigns = _campaigns.where((c) => c.isValid()).toList();
     
     if (activeCampaigns.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Row(
-            children: [
-              Icon(Icons.warning, color: Colors.white),
-              SizedBox(width: 8),
-              Text('Aktif kampanya yok!'),
-            ],
-          ),
+          content: Text('Aktif kampanya yok! Önce bir kampanya açın.'),
           backgroundColor: Colors.orange,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       );
       return;
@@ -520,6 +512,16 @@ class _CampaignManagementScreenState extends State<CampaignManagementScreen> {
       }
     }
     
+    if (phoneNumbers.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Müşteri listesi boş!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+    
     String campaignMessage = '🎉 AUTO CLUB ERENKÖY KAMPANYA!\n\n';
     for (var campaign in activeCampaigns) {
       campaignMessage += '✅ ${campaign.name}\n';
@@ -527,75 +529,23 @@ class _CampaignManagementScreenState extends State<CampaignManagementScreen> {
     }
     campaignMessage += '🏢 Auto Club Erenköy - Profesyonel araç bakımı!';
     
-    // SMS gönderme onayı
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        title: Row(
-          children: [
-            Icon(Icons.send, color: Colors.blue),
-            SizedBox(width: 8),
-            Text('SMS Gönderimi'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.blue[50],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text('${phoneNumbers.length} müşteriye kampanya SMS\'i gönderilecek.\n\nDevam edilsin mi?',
-                style: TextStyle(fontSize: 16)),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('İptal', style: TextStyle(color: Colors.grey)),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              for (String phone in phoneNumbers) {
-                if (phone.isNotEmpty) {
-                  _sendSMS(phone, campaignMessage);
-                }
-              }
-              Navigator.pop(context);
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Row(
-                      children: [
-                        Icon(Icons.check_circle, color: Colors.white),
-                        SizedBox(width: 8),
-                        Text('${phoneNumbers.length} müşteriye SMS gönderildi!'),
-                      ],
-                    ),
-                    backgroundColor: Colors.green,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            child: Text('Gönder'),
-          ),
-        ],
+    // DIREKT SMS GÖNDER - TIpkı main.dart'taki gibi
+    for (String phone in phoneNumbers) {
+      if (phone.isNotEmpty) {
+        _sendSMS(phone, campaignMessage);
+      }
+    }
+    
+    // Başarı mesajı
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${phoneNumbers.length} müşteriye SMS gönderildi!'),
+        backgroundColor: Colors.green,
       ),
     );
   }
   
-  Future<void> _sendSMS(String phone, String message) async {
+  _sendSMS(String phone, String message) async {
     try {
       // SMS permission kontrolü
       var status = await Permission.sms.status;
