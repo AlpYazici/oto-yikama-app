@@ -45,7 +45,7 @@ class CarWashApp extends StatefulWidget {
 }
 
 class _CarWashAppState extends State<CarWashApp> {
- static const platform = MethodChannel('com.example.car_wash_app/sms');
+   static const platform = MethodChannel('com.example.autoclub_erenkoy/sms');
  final _phoneController = TextEditingController();
  final _plateController = TextEditingController();
  String _selectedService = '';

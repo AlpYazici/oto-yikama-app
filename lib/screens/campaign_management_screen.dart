@@ -12,7 +12,7 @@ class CampaignManagementScreen extends StatefulWidget {
 }
 
 class _CampaignManagementScreenState extends State<CampaignManagementScreen> {
-  static const platform = MethodChannel('com.example.car_wash_app/sms');
+  static const platform = MethodChannel('com.example.autoclub_erenkoy/sms');
   List<Campaign> _campaigns = [];
   
   // AutoClub Erenköy özel kampanya şablonları
