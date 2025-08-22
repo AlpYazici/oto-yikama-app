@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 import 'dart:convert';
 
 import '../models/revenue_model.dart';
@@ -576,12 +577,16 @@ class _RevenueAnalysisScreenState extends State<RevenueAnalysisScreen> {
   }
   
   List<Widget> _buildBarChart() {
-    final days = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
     final maxRevenue = _getMaxRevenue();
     
     return List.generate(7, (index) {
       final date = DateTime.now().subtract(Duration(days: 6 - index));
       final dayRevenue = _getDayRevenue(date);
+      
+      // Telefon takviminden gerçek gün adını al (Türkçe)
+      final dayName = DateFormat('E', 'tr_TR').format(date);
+      // Kısa format: Pzt, Sal, Çar, Per, Cum, Cmt, Paz
+      final shortDayName = _getShortDayName(date.weekday);
       
       final height = maxRevenue > 0 ? (dayRevenue / maxRevenue) * 160 : 0.0;
       final isToday = index == 6;
@@ -626,7 +631,7 @@ class _RevenueAnalysisScreenState extends State<RevenueAnalysisScreen> {
             ),
           ),
           SizedBox(height: 8),
-          Text(days[index], 
+          Text(shortDayName, 
             style: TextStyle(
               fontSize: 14, 
               fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
@@ -636,6 +641,20 @@ class _RevenueAnalysisScreenState extends State<RevenueAnalysisScreen> {
         ],
       );
     });
+  }
+
+  // Türkçe gün adlarını kısa format'a çevir
+  String _getShortDayName(int weekday) {
+    switch (weekday) {
+      case 1: return 'Pzt';  // Monday
+      case 2: return 'Sal';  // Tuesday
+      case 3: return 'Çar';  // Wednesday
+      case 4: return 'Per';  // Thursday
+      case 5: return 'Cum';  // Friday
+      case 6: return 'Cmt';  // Saturday
+      case 7: return 'Paz';  // Sunday
+      default: return 'Bilinmiyor';
+    }
   }
   
   double _getMaxRevenue() {
