@@ -12,7 +12,7 @@ class RevenueAnalysisScreen extends StatefulWidget {
   _RevenueAnalysisScreenState createState() => _RevenueAnalysisScreenState();
 }
 
-class _RevenueAnalysisScreenState extends State<RevenueAnalysisScreen> {
+class _RevenueAnalysisScreenState extends State<RevenueAnalysisScreen> with AutomaticKeepAliveClientMixin {
 
   List<RevenueAnalysis> _weeklyData = [];
   Map<String, dynamic> _todayStats = {};
@@ -20,8 +20,18 @@ class _RevenueAnalysisScreenState extends State<RevenueAnalysisScreen> {
   List<Map<String, dynamic>> _serviceRanking = [];
   
   @override
+  bool get wantKeepAlive => true;
+  
+  @override
   void initState() {
     super.initState();
+    _loadAllData();
+  }
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Tab'a her gelindiğinde veri yenile
     _loadAllData();
   }
   
@@ -172,6 +182,7 @@ class _RevenueAnalysisScreenState extends State<RevenueAnalysisScreen> {
   
   @override
   Widget build(BuildContext context) {
+    super.build(context); // AutomaticKeepAliveClientMixin için gerekli
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -583,8 +594,6 @@ class _RevenueAnalysisScreenState extends State<RevenueAnalysisScreen> {
       final date = DateTime.now().subtract(Duration(days: 6 - index));
       final dayRevenue = _getDayRevenue(date);
       
-      // Telefon takviminden gerçek gün adını al (Türkçe)
-      final dayName = DateFormat('E', 'tr_TR').format(date);
       // Kısa format: Pzt, Sal, Çar, Per, Cum, Cmt, Paz
       final shortDayName = _getShortDayName(date.weekday);
       
